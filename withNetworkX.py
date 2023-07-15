@@ -1,4 +1,5 @@
 import networkx as nx
+import time
 
 # Функція для генерації графа
 def generate_graph(edges):
@@ -29,5 +30,28 @@ def solve(edges):
         print("Не всі вершини покриті циклами довжиною >= 3")
 
 # Тестуємо функцію на графі
-edges = [(1, 2), (2, 3), (3, 1), (3, 4), (4, 5), (5, 3)]
-solve(edges)
+sizes = [1, 3, 10, 15, 25]
+def generate_edges(n):
+    edges = []
+    # Створюємо цикли довжиною >= 3 для кожної вершини
+    for i in range(n):
+        # Генеруємо цикл з трьох вершин
+        cycle = [(i, (i+1)%n), ((i+1)%n, (i+2)%n), ((i+2)%n, i)]
+        # Додаємо тільки нові ребра до списку
+        for edge in cycle:
+            if edge not in edges and (edge[1], edge[0]) not in edges:
+                edges.append(edge)
+    return edges
+
+# Запускаємо розв'язок з заданими ребрами
+for size in sizes:
+    # Генеруємо граф з випадковими ребрами
+    edges = generate_edges(size)
+
+    # Вимірюємо час виконання алгоритму
+    start_time = time.time()
+    solve(edges)
+    end_time = time.time()
+
+    # Виводимо час виконання
+    print(f"Розмір графу: {size}, Час виконання: {end_time - start_time} секунди")
