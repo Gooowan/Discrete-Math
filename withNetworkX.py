@@ -24,10 +24,18 @@ def check_coverage(G, cycles):
 def solve(edges):
     G = generate_graph(edges)
     cycles = find_cycles(G)
+
+    # додамо кольори для зручності перегляду вдалих результів
+    class bcolors:
+        OKGREEN = '\033[92m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+
     if check_coverage(G, cycles):
-        print("Всі вершини покриті циклами довжиною >= 3")
+        print(f"{bcolors.OKGREEN}Всі вершини покриті циклами довжиною >= 3{bcolors.ENDC}")
     else:
-        print("Не всі вершини покриті циклами довжиною >= 3")
+        print(f"{bcolors.FAIL}Не всі вершини покриті циклами довжиною >= 3{bcolors.ENDC}")
+
 
 # Тестуємо функцію на графі
 sizes = [1, 3, 10, 15, 25]
