@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter import simpledialog
+from tkinter import messagebox
 import networkx as nx
 import time
 
@@ -25,41 +28,47 @@ def solve(edges):
     G = generate_graph(edges)
     cycles = find_cycles(G)
 
-    # додамо кольори для зручності перегляду вдалих результів
-    class bcolors:
-        OKGREEN = '\033[92m'
-        FAIL = '\033[91m'
-        ENDC = '\033[0m'
-
     if check_coverage(G, cycles):
-        print(f"{bcolors.OKGREEN}Всі вершини покриті циклами довжиною >= 3{bcolors.ENDC}")
+        return f"Всі вершини покриті циклами довжиною >= 3"
     else:
-        print(f"{bcolors.FAIL}Не всі вершини покриті циклами довжиною >= 3{bcolors.ENDC}")
+        return f"Не всі вершини покриті циклами довжиною >= 3"
 
-
-# Тестуємо функцію на графі
-sizes = [1, 3, 10, 15, 25]
 def generate_edges(n):
     edges = []
-    # Створюємо цикли довжиною >= 3 для кожної вершини
+    # Створення циклів довжиною >= 3 для кожної вершини
     for i in range(n):
-        # Генеруємо цикл з трьох вершин
+        # Генерація циклу з трьох вершин
         cycle = [(i, (i+1)%n), ((i+1)%n, (i+2)%n), ((i+2)%n, i)]
-        # Додаємо тільки нові ребра до списку
+        # Додавання тільки нових ребер до списку
         for edge in cycle:
             if edge not in edges and (edge[1], edge[0]) not in edges:
                 edges.append(edge)
     return edges
 
-# Запускаємо розв'язок з заданими ребрами
-for size in sizes:
-    # Генеруємо граф з випадковими ребрами
+# Запуск розв'язку з заданими ребрами
+def run_solve():
+    # Створення кореневого вікна Tkinter
+    root = tk.Tk()
+    root.withdraw()
+
+    # Запит користувача ввести розмір графа
+    size = simpledialog.askinteger("Input", "Введіть розмір графа")
+
+    # Перевірка, чи вводив користувач число
+    if size is None:
+        messagebox.showinfo("Вихід", "Розмір не введено, вихід.")
+        return
+
+    # Генерація графа з випадковими ребрами
     edges = generate_edges(size)
 
-    # Вимірюємо час виконання алгоритму
+    # Вимірювання часу виконання алгоритму
     start_time = time.time()
-    solve(edges)
+    result = solve(edges)
     end_time = time.time()
 
-    # Виводимо час виконання
-    print(f"Розмір графу: {size}, Час виконання: {end_time - start_time} секунди")
+    # Виведення результату та часу виконання у вікні повідомлення
+    messagebox.showinfo("Результат", f"{result}\nРозмір графа: {size}, Час виконання: {end_time - start_time} секунд")
+
+# Запуск функції
+run_solve()
